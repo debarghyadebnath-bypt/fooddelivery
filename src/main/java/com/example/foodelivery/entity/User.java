@@ -1,6 +1,7 @@
 package com.example.foodelivery.entity;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -9,43 +10,38 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
 
-	@NotBlank
-	@Size(max = 100)
+
 	@Column(nullable = false, length = 100)
 	private String name;
 
-	@NotBlank
-	@Email
-	@Size(max = 150)
+
 	@Column(nullable = false, unique = true, length = 150)
 	private String email;
 
-	@NotBlank
-	@Size(min = 8, max = 255)
+
 	@Column(nullable = false)
 	private String password;
 
-	@NotBlank
-	@Pattern(regexp = "^\\d{10,15}$")
+
 	@Column(nullable = false, unique = true, length = 15)
 	private String phone;
+
 
 
 
@@ -57,4 +53,15 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user")
 	private List<Order> orders = new ArrayList<>();
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of();
+	}
+
+	@Override
+	public String getUsername() {
+		return email;
+	}
 }
