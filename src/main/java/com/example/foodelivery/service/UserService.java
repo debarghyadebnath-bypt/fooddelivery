@@ -1,8 +1,10 @@
 package com.example.foodelivery.service;
 
 import com.example.foodelivery.dto.LoginDto;
+import com.example.foodelivery.dto.ProfileDto;
 import com.example.foodelivery.dto.UserDto;
 import com.example.foodelivery.entity.User;
+import com.example.foodelivery.entity.UserRole;
 import com.example.foodelivery.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -36,13 +40,30 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
     }
 
+    public ProfileDto getProfile(Long id) {
+        return modelMapper.map(getUserById(id), ProfileDto.class);
+    }
+
     public UserDto register(UserDto userDto) {
         User user = modelMapper.map(userDto, User.class);
+        if (user.getRole() == null) {
+            user.setRole(UserRole.CUSTOMER);
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedEntity = userRepository.save(user);
         return modelMapper.map(savedEntity, UserDto.class);
 
 
+    }
+
+    @Transactional
+    public ProfileDto updateProfile(Long id, ProfileDto profileDto) {
+        User user = getUserById(id);
+        modelMapper.map(profileDto, user);
+        if (profileDto.getRole() != null) {
+            user.setRole(profileDto.getRole());
+        }
+        return modelMapper.map(userRepository.save(user), ProfileDto.class);
     }
 
     public LoginDto login(LoginDto loginDto) {
@@ -59,6 +80,5 @@ public class UserService implements UserDetailsService {
         response.setToken(jwtService.generateAccessToken(user));
         return response;
     }
-
 
 }
