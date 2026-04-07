@@ -10,8 +10,10 @@ import java.math.BigDecimal;
 
 @Data
 public class MenuItemRequestDto {
+
     @NotNull
     private Long restaurantId;
+
 
     @NotBlank
     @Size(max = 150)
