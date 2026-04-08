@@ -39,6 +39,6 @@ public class CartItem extends BaseEntity {
 
 	@NotNull
 	@Digits(integer = 12, fraction = 2)
-	@Column(nullable = false, precision = 14, scale = 2)
+	@Column(nullable = false)
 	private BigDecimal price;
 }
