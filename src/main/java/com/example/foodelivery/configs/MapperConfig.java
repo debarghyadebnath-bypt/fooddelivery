@@ -2,8 +2,12 @@ package com.example.foodelivery.configs;
 
 import com.example.foodelivery.dto.CartDto;
 import com.example.foodelivery.dto.CartItemDto;
+import com.example.foodelivery.dto.OrderDto;
+import com.example.foodelivery.dto.PaymentDto;
 import com.example.foodelivery.entity.Cart;
 import com.example.foodelivery.entity.CartItem;
+import com.example.foodelivery.entity.Order;
+import com.example.foodelivery.entity.Payment;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -36,6 +40,15 @@ public class MapperConfig {
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         cartMap.addMappings(mapper -> mapper.using(totalAmountConverter).map(source -> source, CartDto::setTotalAmount));
+
+        TypeMap<Payment, PaymentDto> paymentMap = modelMapper.createTypeMap(Payment.class, PaymentDto.class);
+        paymentMap.addMappings(mapper -> mapper.map(source -> source.getOrder().getId(), PaymentDto::setOrderId));
+
+        TypeMap<Order, OrderDto> orderMap = modelMapper.createTypeMap(Order.class, OrderDto.class);
+        orderMap.addMappings(mapper -> {
+            mapper.map(source -> source.getUser().getId(), OrderDto::setUserId);
+            mapper.map(source -> source.getRestaurant().getId(), OrderDto::setRestaurantId);
+        });
 
         return modelMapper;
     }

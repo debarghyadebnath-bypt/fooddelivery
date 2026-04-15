@@ -4,7 +4,8 @@ import com.example.foodelivery.dto.LoginDto;
 import com.example.foodelivery.dto.ProfileDto;
 import com.example.foodelivery.dto.UserDto;
 import com.example.foodelivery.entity.User;
-import com.example.foodelivery.entity.UserRole;
+
+import com.example.foodelivery.entity.enums.UserRole;
 import com.example.foodelivery.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.BadCredentialsException;

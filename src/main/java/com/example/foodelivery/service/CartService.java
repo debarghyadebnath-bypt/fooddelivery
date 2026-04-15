@@ -42,6 +42,11 @@ public class CartService {
         return modelMapper.map(cart, CartDto.class);
     }
 
+    @Transactional(readOnly = true)
+    public Cart getActiveCart(Long userId) {
+        return findExistingCart(userId);
+    }
+
     @Transactional
     public CartDto addItem(Long userId , CartItemRequestDto cartItemRequestDto) {
         Cart cart = findOrCreateCart(userId);
@@ -90,7 +95,7 @@ public class CartService {
     }
 
     private Cart findOrCreateCart(Long userId) {
-        return cartRepository.findByUserId(userId)
+        return cartRepository.findByUserIdAndStatus(userId, CartStatus.ACTIVE)
                 .orElseGet(() -> {
                     User user = findUserById(userId);
                     Cart cart = new Cart();
@@ -101,7 +106,7 @@ public class CartService {
     }
 
     private Cart findExistingCart(Long userId) {
-        return cartRepository.findByUserId(userId)
+        return cartRepository.findByUserIdAndStatus(userId, CartStatus.ACTIVE)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart not found for user id: " + userId));
     }
 

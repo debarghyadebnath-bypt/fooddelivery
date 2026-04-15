@@ -14,15 +14,15 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "orders")
+@Builder
 public class Order extends BaseEntity {
 
 	@NotNull
@@ -42,9 +42,10 @@ public class Order extends BaseEntity {
 	private BigDecimal totalAmount;
 
 	@NotNull
+	@Builder.Default
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false, length = 40)
-	private OrderStatus orderStatus = OrderStatus.PLACED;
+	private OrderStatus orderStatus = OrderStatus.PENDING;
 
 	@OneToOne(mappedBy = "order")
 	private Payment payment;

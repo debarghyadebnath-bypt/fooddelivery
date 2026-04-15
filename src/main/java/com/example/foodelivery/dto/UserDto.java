@@ -1,6 +1,6 @@
 package com.example.foodelivery.dto;
 
-import com.example.foodelivery.entity.UserRole;
+import com.example.foodelivery.entity.enums.UserRole;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

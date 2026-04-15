@@ -1,13 +1,14 @@
 package com.example.foodelivery.controller;
 
 import com.example.foodelivery.advices.ApiResponse;
+import com.example.foodelivery.dto.OrderDto;
 import com.example.foodelivery.dto.RestaurantDto;
 import com.example.foodelivery.dto.RestaurantRequestDto;
 import com.example.foodelivery.entity.User;
+import com.example.foodelivery.service.OrderService;
 import com.example.foodelivery.service.RestaurantService;
 import com.example.foodelivery.utils.PageResponse;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,9 +20,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/restaurants")
 public class RestaurantController {
     private final RestaurantService restaurantService;
+    private final OrderService orderService;
 
-    public RestaurantController(RestaurantService restaurantService) {
+    public RestaurantController(RestaurantService restaurantService, OrderService orderService) {
         this.restaurantService = restaurantService;
+        this.orderService = orderService;
     }
 
     @PostMapping
@@ -46,6 +49,20 @@ public class RestaurantController {
     public ResponseEntity<RestaurantDto> getById(@PathVariable Long id) {
         RestaurantDto restaurantDto = restaurantService.getById(id);
         return new ResponseEntity<>(restaurantDto, HttpStatus.FOUND);
+    }
+
+    @GetMapping("/{id}/orders")
+    public ResponseEntity<ApiResponse<PageResponse<OrderDto>>> getOrdersByRestaurantId(@AuthenticationPrincipal User authenticatedUser,
+                                                                                       @PathVariable Long id,
+                                                                                       @RequestParam(defaultValue = "0") int pageNo,
+                                                                                       @RequestParam(defaultValue = "10") int pageSize) {
+        if (authenticatedUser == null) {
+            throw new IllegalStateException("Authenticated user is required to view restaurant orders");
+        }
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        PageResponse<OrderDto> orderPageResponse = orderService.getByRestaurantId(id, pageable);
+        return new ResponseEntity<>(new ApiResponse<>(orderPageResponse), HttpStatus.OK);
     }
 
     @PutMapping("/{id}")

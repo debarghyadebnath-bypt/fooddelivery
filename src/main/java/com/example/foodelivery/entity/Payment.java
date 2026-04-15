@@ -39,6 +39,9 @@ public class Payment extends BaseEntity {
 	@Column(nullable = false, length = 30)
 	private PaymentStatus paymentStatus = PaymentStatus.PENDING;
 
+	@Column(unique = true, length = 100)
+	private String stripePaymentIntentId;
+
 	@NotNull
 	@Digits(integer = 12, fraction = 2)
 	@Column(nullable = false, precision = 14, scale = 2)

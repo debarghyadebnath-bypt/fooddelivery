@@ -20,6 +20,10 @@ public class PaymentDto {
 
     private PaymentStatus paymentStatus;
 
+    private String stripePaymentIntentId;
+
+    private String clientSecret;
+
     @NotNull
     private BigDecimal amount;
 

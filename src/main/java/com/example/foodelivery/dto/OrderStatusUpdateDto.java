@@ -7,5 +7,8 @@ import lombok.Data;
 @Data
 public class OrderStatusUpdateDto {
     @NotNull
+    private Long orderId;
+
+    @NotNull
     private OrderStatus orderStatus;
 }
