@@ -41,7 +41,7 @@ public class RestaurantController {
     public  ResponseEntity<ApiResponse<PageResponse<RestaurantDto>>> getAll(@RequestParam(required = false) String title, @RequestParam(defaultValue = "0") int pageNo,
                                                                             @RequestParam(defaultValue = "3") int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        PageResponse<RestaurantDto> restaurantPageResponse = restaurantService.getAll(title,pageable);;
+        PageResponse<RestaurantDto> restaurantPageResponse = restaurantService.getAll(title,pageable);
         return new ResponseEntity<>(new ApiResponse<>(restaurantPageResponse), HttpStatus.OK);
     }
 

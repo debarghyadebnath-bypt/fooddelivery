@@ -95,7 +95,21 @@ public class CartService {
     }
 
     private Cart findOrCreateCart(Long userId) {
+        // 1. Pehle check karo agar koi ACTIVE cart hai
         return cartRepository.findByUserIdAndStatus(userId, CartStatus.ACTIVE)
+                .map(cart -> cart) // Agar mil gaya toh wahi return kar do
+                .orElseGet(() -> handleCartReactivationOrCreate(userId));
+    }
+
+    private Cart handleCartReactivationOrCreate(Long userId) {
+        // 2. Agar ACTIVE nahi mila, toh check karo koi purana cart hai ya nahi
+        return cartRepository.findByUserId(userId)
+                .map(existingCart -> {
+                    existingCart.setStatus(CartStatus.ACTIVE);
+                    existingCart.getCartItems().clear(); // Fresh start
+                    return cartRepository.save(existingCart);
+                })
+                // 3. Agar kuch nahi mila, toh naya banao
                 .orElseGet(() -> {
                     User user = findUserById(userId);
                     Cart cart = new Cart();
