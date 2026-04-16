@@ -52,15 +52,7 @@ public class MenuService {
     public MenuItemDto update(Long id, MenuItemRequestDto menuItemRequestDto) {
 
         MenuItem menuItem = findMenuItemById(id);
-        /*
-        modelMapper.map(menuItemRequestDto, menuItem);
 
-        Restaurant restaurant = findRestaurantById(menuItemRequestDto.getRestaurantId());
-        menuItem.setRestaurant(restaurant);
-        menuItemRepository.save(menuItem);
-         return  modelMapper.map(menuItem,MenuItemDto.class);
-
-*/
         Restaurant restaurant = findRestaurantById(menuItemRequestDto.getRestaurantId());
         menuItem.setRestaurant(restaurant);
         menuItem.setName(menuItemRequestDto.getName());
@@ -93,12 +85,5 @@ public class MenuService {
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id: " + id));
     }
-    /*
-    private MenuItemDto toDto(MenuItem menuItem) {
-        MenuItemDto menuItemDto = modelMapper.map(menuItem, MenuItemDto.class);
-        menuItemDto.setRestaurantId(menuItem.getRestaurant().getId());
-        return menuItemDto;
-    }
 
-     */
 }

@@ -21,6 +21,7 @@ public class WebSecurityConfig {
         httpSecurity
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/payments/webhook").permitAll()
                         .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
 
 
@@ -29,7 +30,7 @@ public class WebSecurityConfig {
                 .sessionManagement(sessionConfig -> sessionConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//                .formLogin(Customizer.withDefaults());
+
 
         return httpSecurity.build();
     }
